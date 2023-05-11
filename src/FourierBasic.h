@@ -12,9 +12,10 @@ private:
     void Transform1d(int n, int sign, const ComplT* in, ComplT* out, unsigned options = 0) override;
 };
 
-template <typename ComplT>
-void FourierBasic<ComplT>::Transform1d(int n, int sign, const ComplT* in, ComplT* out,
-                                       unsigned int options) {
+namespace fourier_transforms {
+
+template <typename ComplT = std::complex<double>>
+void Transform1dBasic(int n, int sign, const ComplT* in, ComplT* out) {
     for (int i = 0; i < n; ++i) {
         double base_power = sign * 2 * M_PI * i / n;
         out[i] = 0;
@@ -22,4 +23,12 @@ void FourierBasic<ComplT>::Transform1d(int n, int sign, const ComplT* in, ComplT
             out[i] += in[j] * std::polar(1., base_power * j);
         }
     }
+}
+
+}  // namespace fourier_transforms
+
+template <typename ComplT>
+void FourierBasic<ComplT>::Transform1d(int n, int sign, const ComplT* in, ComplT* out,
+                                       unsigned int options) {
+    fourier_transforms::Transform1dBasic(n, sign, in, out);
 }
