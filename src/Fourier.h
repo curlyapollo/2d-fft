@@ -20,7 +20,6 @@ public:
     // Inverse Fourier transform of 2d complex data written in a C-style array
     virtual void Inverse2d(int rows, int cols, const ComplT* in, ComplT* out, unsigned options = 0);
 
-private:
     // general Fourier transform, where sign refers to sign in complex exponent i.e. negative for
     // forward transforms and positive for inverse. Doesn't do any normalizing
     virtual void Transform1d(int n, int sign, const ComplT* in, ComplT* out, unsigned options) = 0;

@@ -11,7 +11,7 @@
 // 2d transforms are done using several applications of 1d transforms
 template <typename ComplT = std::complex<double>>
 class FourierFast : public Fourier<ComplT> {
-private:
+public:
     void Transform1d(int n, int sign, const ComplT* in, ComplT* out, unsigned options = 0) override;
 };
 

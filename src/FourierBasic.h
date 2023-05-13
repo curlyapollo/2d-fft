@@ -8,7 +8,7 @@
 
 template <typename ComplT = std::complex<double>>
 class FourierBasic : public Fourier<ComplT> {
-private:
+public:
     void Transform1d(int n, int sign, const ComplT* in, ComplT* out, unsigned options = 0) override;
 };
 
