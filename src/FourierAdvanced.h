@@ -14,6 +14,7 @@ class FourierAdvanced : public FourierFast<ComplT> {
 public:
     void Transform2d(int rows, int cols, int sign, const ComplT* in, ComplT* out,
                      unsigned options = 0) override;
+    virtual ~FourierAdvanced(){};
 };
 
 namespace fourier_transforms {

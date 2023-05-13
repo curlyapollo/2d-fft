@@ -27,6 +27,7 @@ public:
     // same as 1d general Fourier transform but 2d
     virtual void Transform2d(int rows, int cols, int sign, const ComplT* in, ComplT* out,
                              unsigned options);
+    virtual ~Fourier(){};
 };
 
 template <typename ComplT>

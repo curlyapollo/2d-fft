@@ -13,6 +13,7 @@ template <typename ComplT = std::complex<double>>
 class FourierFast : public Fourier<ComplT> {
 public:
     void Transform1d(int n, int sign, const ComplT* in, ComplT* out, unsigned options = 0) override;
+    virtual ~FourierFast(){};
 };
 
 namespace fourier_transforms {
