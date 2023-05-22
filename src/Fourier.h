@@ -22,11 +22,12 @@ public:
 
     // general Fourier transform, where sign refers to sign in complex exponent i.e. negative for
     // forward transforms and positive for inverse. Doesn't do any normalizing
-    virtual void Transform1d(int n, int sign, const ComplT* in, ComplT* out, unsigned options) = 0;
+    virtual void Transform1d(int n, int sign, const ComplT* in, ComplT* out,
+                             unsigned options = 0) = 0;
 
     // same as 1d general Fourier transform but 2d
     virtual void Transform2d(int rows, int cols, int sign, const ComplT* in, ComplT* out,
-                             unsigned options);
+                             unsigned options = 0);
     virtual ~Fourier(){};
 };
 

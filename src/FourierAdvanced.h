@@ -15,16 +15,26 @@ public:
     void Transform2d(int rows, int cols, int sign, const ComplT* in, ComplT* out,
                      unsigned options = 0) override;
     virtual ~FourierAdvanced(){};
+
+private:
+    static void StaticTransform2d(int rows, int cols, int sign, const ComplT* in, ComplT* out,
+                                  unsigned options = 0);
 };
 
-namespace fourier_transforms {
+template <typename ComplT>
+void FourierAdvanced<ComplT>::Transform2d(int rows, int cols, int sign, const ComplT* in,
+                                          ComplT* out, unsigned options) {
+    FourierAdvanced<ComplT>::StaticTransform2d(rows, cols, sign, in, out);
+}
 
-template <typename ComplT = std::complex<double>>
-void Transform2dFast(int rows, int cols, int sign, const ComplT* in, ComplT* out) {
+template <typename ComplT>
+void FourierAdvanced<ComplT>::StaticTransform2d(int rows, int cols, int sign, const ComplT* in,
+                                                ComplT* out, unsigned int options) {
+
     if (rows < cols) {
         ComplT* tmp = new ComplT[rows * cols];
         Transpose(rows, cols, in, out);
-        Transform2dFast(cols, rows, sign, out, tmp);
+        FourierAdvanced<ComplT>::StaticTransform2d(cols, rows, sign, out, tmp);
         Transpose(cols, rows, tmp, out);
         delete[] tmp;
         return;
@@ -37,9 +47,9 @@ void Transform2dFast(int rows, int cols, int sign, const ComplT* in, ComplT* out
                 tmp[IND_2D(rows, cols, i + rows / 2, j)] = in[IND_2D(rows, cols, 2 * i + 1, j)];
             }
         }
-        fourier_transforms::Transform2dFast(rows / 2, cols, sign, tmp, out);
-        fourier_transforms::Transform2dFast(rows / 2, cols, sign, tmp + (rows / 2) * cols,
-                                            out + (rows / 2) * cols);
+        FourierAdvanced<ComplT>::StaticTransform2d(rows / 2, cols, sign, tmp, out);
+        FourierAdvanced<ComplT>::StaticTransform2d(rows / 2, cols, sign, tmp + (rows / 2) * cols,
+                                                   out + (rows / 2) * cols);
 
         double base_power = sign * 2 * M_PI / rows;
         for (int i = 0; i * 2 < rows; ++i) {
@@ -79,10 +89,10 @@ void Transform2dFast(int rows, int cols, int sign, const ComplT* in, ComplT* out
             }
         }
 
-        fourier_transforms::Transform2dFast(rows / 2, cols / 2, sign, g00, res00);
-        fourier_transforms::Transform2dFast(rows / 2, cols / 2, sign, g01, res01);
-        fourier_transforms::Transform2dFast(rows / 2, cols / 2, sign, g10, res10);
-        fourier_transforms::Transform2dFast(rows / 2, cols / 2, sign, g11, res11);
+        FourierAdvanced<ComplT>::StaticTransform2d(rows / 2, cols / 2, sign, g00, res00);
+        FourierAdvanced<ComplT>::StaticTransform2d(rows / 2, cols / 2, sign, g01, res01);
+        FourierAdvanced<ComplT>::StaticTransform2d(rows / 2, cols / 2, sign, g10, res10);
+        FourierAdvanced<ComplT>::StaticTransform2d(rows / 2, cols / 2, sign, g11, res11);
         double base_power = sign * 2 * M_PI / rows;
 
         for (int i = 0; i < rows; ++i) {
@@ -103,12 +113,4 @@ void Transform2dFast(int rows, int cols, int sign, const ComplT* in, ComplT* out
     } else {
         FourierFast().Transform2d(rows, cols, sign, in, out, 0);
     }
-}
-
-}  // namespace fourier_transforms
-
-template <typename ComplT>
-void FourierAdvanced<ComplT>::Transform2d(int rows, int cols, int sign, const ComplT* in,
-                                          ComplT* out, unsigned options) {
-    fourier_transforms::Transform2dFast(rows, cols, sign, in, out);
 }
