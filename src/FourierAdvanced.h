@@ -11,6 +11,9 @@
 // algo and 2d transforms are done using algos from Tutatchikov, Starovoytov and Noskov 's papers
 template <typename ComplT = std::complex<double>>
 class FourierAdvanced : public FourierFast<ComplT> {
+    template <typename>
+    friend class FourierAdvancedBitReverse;
+
 public:
     void Transform2d(int rows, int cols, int sign, const ComplT* in, ComplT* out,
                      unsigned options = 0) override;
