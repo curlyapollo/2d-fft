@@ -36,13 +36,6 @@ void FourierAdvancedBitReverse<ComplT>::StaticTransform2d(int rows, int cols, in
         FourierAdvanced<ComplT>::StaticTransform2d(rows, cols, sign, in, out);
         return;
     }
-    // TODO ---------------------------------------
-    // TEMPORARY
-    if (rows != cols) {
-        FourierAdvanced<ComplT>::StaticTransform2d(rows, cols, sign, in, out);
-        return;
-    }
-    // TODO ----------------------------------------
     Copy(rows * cols, in, out);
     BitReverse* rev_rows = BitReverse::GetInstance(BitLog(rows));
     BitReverse* rev_cols = BitReverse::GetInstance(BitLog(cols));
@@ -62,7 +55,8 @@ void FourierAdvancedBitReverse<ComplT>::StaticTransform2d(int rows, int cols, in
             }
         }
     }
-    for (int len = 2; len <= rows; len *= 2) {  // from last layer of virtual recursion to first
+    for (int len = 2; len <= std::min(rows, cols);
+         len *= 2) {  // from last layer of virtual recursion to first
         double base_power = sign * 2 * M_PI / len;
         for (int i = 0; i < rows; i += len) {  // corresponding to different calls on single layer
             for (int j = 0; j < cols; j += len) {
@@ -89,6 +83,37 @@ void FourierAdvancedBitReverse<ComplT>::StaticTransform2d(int rows, int cols, in
                         c01 = temp01;
                         c10 = temp10;
                         c11 = temp11;
+                    }
+                }
+            }
+        }
+    }
+    if (cols > rows) {
+        for (int len = rows * 2; len <= cols; len *= 2) {
+            double base_power = sign * 2 * M_PI / len;
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j += len) {
+                    for (int v = 0; v < len / 2; ++v) {
+                        ComplT& c0 = out[IND_2D(rows, cols, i, j + v)];
+                        ComplT& c1 = out[IND_2D(rows, cols, i, j + v + len / 2)];
+                        ComplT temp = c0 + c1 * std::polar(1., base_power * v);
+                        c1 = c0 - c1 * std::polar(1., base_power * v);
+                        c0 = temp;
+                    }
+                }
+            }
+        }
+    } else if (rows > cols) {
+        for (int len = cols * 2; len <= rows; len *= 2) {
+            double base_power = sign * 2 * M_PI / len;
+            for (int i = 0; i < rows; i += len) {
+                for (int u = 0; u < len / 2; ++u) {
+                    for (int j = 0; j < cols; j++) {
+                        ComplT& c0 = out[IND_2D(rows, cols, i + u, j)];
+                        ComplT& c1 = out[IND_2D(rows, cols, i + u + len / 2, j)];
+                        ComplT temp = c0 + c1 * std::polar(1., base_power * u);
+                        c1 = c0 - c1 * std::polar(1., base_power * u);
+                        c0 = temp;
                     }
                 }
             }
