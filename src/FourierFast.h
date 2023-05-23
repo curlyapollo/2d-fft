@@ -14,6 +14,9 @@ class FourierFast : public Fourier<ComplT> {
     template <typename>
     friend class FourierAdvanced;
 
+    template <typename>
+    friend class FourierFastBitReverse;
+
 public:
     void Transform1d(int n, int sign, const ComplT* in, ComplT* out, unsigned options = 0) override;
     virtual ~FourierFast(){};

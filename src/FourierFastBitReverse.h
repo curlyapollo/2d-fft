@@ -1,0 +1,61 @@
+#pragma once
+
+#include <math.h>
+
+#include <complex>
+
+#include "BitReverse.h"
+#include "Fourier.h"
+#include "FourierBasic.h"
+#include "FourierFast.h"
+
+// class for Fourier transforms where all transforms are done using classic Cooley-Tukey FFT algo.
+// 2d transforms are done using several applications of 1d transforms
+template <typename ComplT = std::complex<double>>
+class FourierFastBitReverse : public Fourier<ComplT> {
+    template <typename>
+    friend class FourierAdvanced;
+
+public:
+    void Transform1d(int n, int sign, const ComplT* in, ComplT* out, unsigned options = 0) override;
+    virtual ~FourierFastBitReverse(){};
+
+private:
+    static void StaticTransform1d(int n, int sign, const ComplT* in, ComplT* out,
+                                  unsigned options = 0);
+};
+
+template <typename ComplT>
+void FourierFastBitReverse<ComplT>::Transform1d(int n, int sign, const ComplT* in, ComplT* out,
+                                                unsigned int options) {
+    FourierFastBitReverse<ComplT>::StaticTransform1d(n, sign, in, out);
+}
+
+template <typename ComplT>
+void FourierFastBitReverse<ComplT>::StaticTransform1d(int n, int sign, const ComplT* in,
+                                                      ComplT* out, unsigned options) {
+
+    if (!IsPowerOf2(n)) {
+        FourierFast<ComplT>::StaticTransform1d(n, sign, in, out);
+        return;
+    }
+    Copy(n, in, out);
+    BitReverse* rev = BitReverse::GetInstance(BitLog(n));
+    for (int i = 0; i < n; ++i) {
+        if (i < rev->Get(i)) {
+            std::swap(out[i], out[rev->Get(i)]);
+        }
+    }
+    for (int len = 2; len <= n; len *= 2) {  // from last layer of virtual recursion to first
+        double base_power = sign * 2 * M_PI / len;
+        for (int i = 0; i < n; i += len) {  // corresponding to different calls on single layer
+            for (int j = 0; j < len / 2; ++j) {
+
+                ComplT temp = out[i + j] + out[i + j + len / 2] * std::polar(1., base_power * j);
+                out[i + j + len / 2] =
+                    out[i + j] - out[i + j + len / 2] * std::polar(1., base_power * j);
+                out[i + j] = temp;
+            }
+        }
+    }
+}

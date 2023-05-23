@@ -1,8 +1,14 @@
-//
-// Created by rwarazor on 23.05.23.
-//
+#pragma once
 
-#ifndef INC_2D_FFT_BITREVERSE_H
-#define INC_2D_FFT_BITREVERSE_H
+#include <memory>
 
-#endif  // INC_2D_FFT_BITREVERSE_H
+class BitReverse {
+    BitReverse(int log);
+
+public:
+    static BitReverse* GetInstance(int log);
+    int Get(int num);
+
+private:
+    std::unique_ptr<int[]> data_;
+};

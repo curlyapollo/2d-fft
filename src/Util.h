@@ -19,3 +19,23 @@ void TransposeInplace(int n, T* in) {
         }
     }
 }
+
+template <typename T>
+void Copy(int n, const T* in, T* out) {
+    for (int i = 0; i < n; ++i) {
+        out[i] = in[i];
+    }
+}
+
+bool IsPowerOf2(int num) {
+    return num > 0 && (((num - 1) & num) == 0);
+}
+
+int BitLog(int n) {
+    int ans = 0;
+    while (n > 1) {
+        n >>= 1;
+        ans++;
+    }
+    return ans;
+}
