@@ -9,7 +9,9 @@
 #include "FourierBasic.h"
 #include "FourierFast.h"
 
-// class for Fourier transforms where all transforms are done using classic Cooley-Tukey FFT algo.
+// class for Fourier transforms where all transforms are done using Cooley-Tukey FFT algo
+// if size of an array is a power of 2, algorithm avoids both memory allocation and recursion
+// using technic known as bit-reversal permutation
 // 2d transforms are done using several applications of 1d transforms
 template <typename ComplT = std::complex<double>>
 class FourierFastBitReverse : public Fourier<ComplT> {
