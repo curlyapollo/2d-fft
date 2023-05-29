@@ -6,6 +6,7 @@
 
 #include "Fourier.h"
 #include "FourierBasic.h"
+#include "Util.h"
 
 // class for Fourier transforms where all transforms are done using classic Cooley-Tukey FFT algo.
 // 2d transforms are done using several applications of 1d transforms
@@ -51,9 +52,12 @@ void FourierFast<ComplT>::StaticTransform1d(int n, int sign, const ComplT* in, C
 
     double base_power = sign * 2 * M_PI / n;
     for (int i = 0; 2 * i < n; ++i) {
-        ComplT temp = out[i] + out[i + n / 2] * std::polar(1., base_power * i);
-        out[i + n / 2] = out[i] - out[i + n / 2] * std::polar(1., base_power * i);
-        out[i] = temp;
+        ComplT& c0 = out[i];
+        ComplT& c1 = out[i + n / 2];
+
+        c1 *= std::polar(1., base_power * i);
+
+        ButterflyTransform(c0, c1);
     }
 
     delete[] even_odd;

@@ -39,3 +39,11 @@ int BitLog(int n) {
     }
     return ans;
 }
+
+template <typename ComplT>
+inline void ButterflyTransform(ComplT& a, ComplT& b) {
+    static ComplT temp;
+    temp = a - b;
+    a = a + b;
+    b = temp;
+}

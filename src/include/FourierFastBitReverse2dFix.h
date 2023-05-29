@@ -67,9 +67,8 @@ void FourierFastBitReverse2dFix<ComplT>::StaticTransform2d(int rows, int cols, i
                     ComplT& c0 = out[IND_2D(rows, cols, i, j + v)];
                     ComplT& c1 = out[IND_2D(rows, cols, i, j + v + len / 2)];
 
-                    ComplT temp = c0 + c1 * std::polar(1., base_power * v);
-                    c1 = c0 - c1 * std::polar(1., base_power * v);
-                    c0 = temp;
+                    c1 *= std::polar(1., base_power * v);
+                    ButterflyTransform(c0, c1);
                 }
             }
         }
@@ -83,9 +82,8 @@ void FourierFastBitReverse2dFix<ComplT>::StaticTransform2d(int rows, int cols, i
                     ComplT& c0 = out[IND_2D(rows, cols, i + u, j)];
                     ComplT& c1 = out[IND_2D(rows, cols, i + u + len / 2, j)];
 
-                    ComplT temp = c0 + c1 * std::polar(1., base_power * u);
-                    c1 = c0 - c1 * std::polar(1., base_power * u);
-                    c0 = temp;
+                    c1 *= std::polar(1., base_power * u);
+                    ButterflyTransform(c0, c1);
                 }
             }
         }

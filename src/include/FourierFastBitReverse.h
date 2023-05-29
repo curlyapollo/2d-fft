@@ -52,11 +52,12 @@ void FourierFastBitReverse<ComplT>::StaticTransform1d(int n, int sign, const Com
         double base_power = sign * 2 * M_PI / len;
         for (int i = 0; i < n; i += len) {  // corresponding to different calls on single layer
             for (int j = 0; j < len / 2; ++j) {
+                ComplT& c0 = out[i + j];
+                ComplT& c1 = out[i + j + len / 2];
 
-                ComplT temp = out[i + j] + out[i + j + len / 2] * std::polar(1., base_power * j);
-                out[i + j + len / 2] =
-                    out[i + j] - out[i + j + len / 2] * std::polar(1., base_power * j);
-                out[i + j] = temp;
+                c1 *= std::polar(1., base_power * j);
+
+                ButterflyTransform(c0, c1);
             }
         }
     }

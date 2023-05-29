@@ -73,35 +73,11 @@ void FourierAdvancedBitReverse<ComplT>::StaticTransform2d(int rows, int cols, in
                         c10 *= std::polar(1., base_power * u);
                         c11 *= std::polar(1., base_power * (v + u));
 
-                        ComplT temp = c00 + c01;
-                        c01 = c00 - c01;
-                        c00 = temp;
+                        ButterflyTransform(c00, c01);
+                        ButterflyTransform(c10, c11);
 
-                        temp = c10 + c11;
-                        c11 = c10 - c11;
-                        c10 = temp;
-
-                        temp = c00 + c10;
-                        c10 = c00 - c10;
-                        c00 = temp;
-
-                        temp = c01 + c11;
-                        c11 = c01 - c11;
-                        c01 = temp;
-
-                        //ComplT temp_a = c00 + c01;
-                        //ComplT temp_b = c00 - c01;
-                        //ComplT temp_c = c10 + c11;
-                        //ComplT temp_d = c10 - c11;
-
-                        //ComplT c00 <- c00 + c01 + c10 + c11;
-                        //ComplT c01 <- c00 - c01 + c10 - c11;
-                        //ComplT c10 <- c00 + c01 - c10 - c11;
-                        //ComplT c11 <- c00 - c01 - c10 + c11;
-                        //c00 = temp_a + temp_c;
-                        //c01 = temp_b + temp_d;
-                        //c10 = temp_a - temp_c;
-                        //c11 = temp_b - temp_d;
+                        ButterflyTransform(c00, c10);
+                        ButterflyTransform(c01, c11);
                     }
                 }
             }
@@ -115,9 +91,9 @@ void FourierAdvancedBitReverse<ComplT>::StaticTransform2d(int rows, int cols, in
                     for (int v = 0; v < len / 2; ++v) {
                         ComplT& c0 = out[IND_2D(rows, cols, i, j + v)];
                         ComplT& c1 = out[IND_2D(rows, cols, i, j + v + len / 2)];
-                        ComplT temp = c0 + c1 * std::polar(1., base_power * v);
-                        c1 = c0 - c1 * std::polar(1., base_power * v);
-                        c0 = temp;
+
+                        c1 *= std::polar(1., base_power * v);
+                        ButterflyTransform(c0, c1);
                     }
                 }
             }
@@ -130,9 +106,10 @@ void FourierAdvancedBitReverse<ComplT>::StaticTransform2d(int rows, int cols, in
                     for (int j = 0; j < cols; j++) {
                         ComplT& c0 = out[IND_2D(rows, cols, i + u, j)];
                         ComplT& c1 = out[IND_2D(rows, cols, i + u + len / 2, j)];
-                        ComplT temp = c0 + c1 * std::polar(1., base_power * u);
-                        c1 = c0 - c1 * std::polar(1., base_power * u);
-                        c0 = temp;
+
+                        c1 *= std::polar(1., base_power * u);
+
+                        ButterflyTransform(c0, c1);
                     }
                 }
             }

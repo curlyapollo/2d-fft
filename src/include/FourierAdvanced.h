@@ -98,16 +98,27 @@ void FourierAdvanced<ComplT>::StaticTransform2d(int rows, int cols, int sign, co
         FourierAdvanced<ComplT>::StaticTransform2d(rows / 2, cols / 2, sign, g11, res11);
         double base_power = sign * 2 * M_PI / rows;
 
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
-                int i1 = (i < rows / 2) ? i : i - rows / 2;
-                int j1 = (j < rows / 2) ? j : j - rows / 2;
-                out[IND_2D(rows, cols, i, j)] =
-                    res00[IND_2D(rows / 2, cols / 2, i1, j1)] +
-                    res01[IND_2D(rows / 2, cols / 2, i1, j1)] * std::polar(1., base_power * j) +
-                    res10[IND_2D(rows / 2, cols / 2, i1, j1)] * std::polar(1., base_power * i) +
-                    res11[IND_2D(rows / 2, cols / 2, i1, j1)] *
-                        std::polar(1., base_power * (i + j));
+        for (int i = 0; i < rows / 2; ++i) {
+            for (int j = 0; j < cols / 2; ++j) {
+                ComplT& c00 = res00[IND_2D(rows / 2, cols / 2, i, j)];
+                ComplT& c01 = res01[IND_2D(rows / 2, cols / 2, i, j)];
+                ComplT& c10 = res10[IND_2D(rows / 2, cols / 2, i, j)];
+                ComplT& c11 = res11[IND_2D(rows / 2, cols / 2, i, j)];
+
+                c01 *= std::polar(1., base_power * j);
+                c10 *= std::polar(1., base_power * i);
+                c11 *= std::polar(1., base_power * (j + i));
+
+                ButterflyTransform(c00, c01);
+                ButterflyTransform(c10, c11);
+
+                ButterflyTransform(c00, c10);
+                ButterflyTransform(c01, c11);
+
+                out[IND_2D(rows, cols, i, j)] = c00;
+                out[IND_2D(rows, cols, i, j + cols / 2)] = c01;
+                out[IND_2D(rows, cols, i + rows / 2, j)] = c10;
+                out[IND_2D(rows, cols, i + rows / 2, j + cols / 2)] = c11;
             }
         }
         delete[] tmp_in;
