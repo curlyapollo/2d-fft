@@ -8,6 +8,7 @@
 #include "FourierBasic.h"
 #include "FourierFast.h"
 #include "FourierFastBitReverse.h"
+#include "FourierFastBitReverse2dFix.h"
 
 using namespace std::complex_literals;
 
@@ -34,6 +35,7 @@ TEST_CASE("test1") {
         std::make_unique<FourierFastBitReverse<>>(),
         std::make_unique<FourierAdvanced<>>(),
         std::make_unique<FourierAdvancedBitReverse<>>(),
+        std::make_unique<FourierFastBitReverse2dFix<>>(),
     };
 
     for (auto& transform : transforms) {
@@ -56,6 +58,7 @@ TEST_CASE("test2") {
         std::make_unique<FourierFastBitReverse<>>(),
         std::make_unique<FourierAdvanced<>>(),
         std::make_unique<FourierAdvancedBitReverse<>>(),
+        std::make_unique<FourierFastBitReverse2dFix<>>(),
     };
 
     for (auto& transform : transforms) {
@@ -76,6 +79,7 @@ TEST_CASE("test3") {
         std::make_unique<FourierFastBitReverse<>>(),
         std::make_unique<FourierAdvanced<>>(),
         std::make_unique<FourierAdvancedBitReverse<>>(),
+        std::make_unique<FourierFastBitReverse2dFix<>>(),
     };
 
     for (auto& transform : transforms) {
@@ -102,6 +106,7 @@ TEST_CASE("test4") {
         std::make_unique<FourierFastBitReverse<>>(),
         std::make_unique<FourierAdvanced<>>(),
         std::make_unique<FourierAdvancedBitReverse<>>(),
+        std::make_unique<FourierFastBitReverse2dFix<>>(),
     };
 
     for (auto& transform : transforms) {
@@ -122,6 +127,7 @@ TEST_CASE("test5") {
         std::make_unique<FourierFastBitReverse<>>(),
         std::make_unique<FourierAdvanced<>>(),
         std::make_unique<FourierAdvancedBitReverse<>>(),
+        std::make_unique<FourierFastBitReverse2dFix<>>(),
     };
 
     for (auto& transform : transforms) {
@@ -147,6 +153,7 @@ TEST_CASE("test6") {
         std::make_unique<FourierFastBitReverse<>>(),
         std::make_unique<FourierAdvanced<>>(),
         std::make_unique<FourierAdvancedBitReverse<>>(),
+        std::make_unique<FourierFastBitReverse2dFix<>>(),
     };
 
     for (auto& transform : transforms) {
@@ -176,6 +183,7 @@ TEST_CASE("test7") {
         std::make_unique<FourierFastBitReverse<>>(),
         std::make_unique<FourierAdvanced<>>(),
         std::make_unique<FourierAdvancedBitReverse<>>(),
+        std::make_unique<FourierFastBitReverse2dFix<>>(),
     };
 
     for (auto& transform : transforms) {
