@@ -7,7 +7,9 @@
 Результаты (в конце): https://disk.yandex.ru/i/igQPbXvcjQo8ag
 
 /src - реализация
+
 test.cpp - тесты с использованием библиотеки Catch2
+
 bench.cpp - бенчмарк с использованием библиотеки google/benchmark
 
 [1] V. S. Tutatchikov. “Two-dimensional fast Fourier transform: Batterfly in analog of CooleyTukey algorithm”. В: 2016 11th International Forum on Strategic Technology (IFOST). 2016, с. 495—498. doi: 10.1109/IFOST.2016.7884163.
