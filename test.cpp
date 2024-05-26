@@ -300,3 +300,104 @@ TEST_CASE("Rand vs Basic 2") {
         }
     }
 }
+
+TEST_CASE("Boundary conditions 1d") {
+    int n = 1; // Обработка одного элемента
+    std::complex<double> in[] = { 1.0 };
+    std::complex<double> res_forward[n];
+    std::complex<double> res_backward[n];
+
+    std::unique_ptr<Fourier<>> transforms[] = {
+        std::make_unique<FourierBasic<>>(),
+        std::make_unique<FourierFast<>>(),
+        std::make_unique<FourierFastBitReverse<>>(),
+        std::make_unique<FourierAdvanced<>>(),
+        std::make_unique<FourierAdvancedBitReverse<>>(),
+        std::make_unique<FourierFastBitReverse2dFix<>>(),
+    };
+
+    for (auto& transform : transforms) {
+        transform->Forward1d(n, in, res_forward);
+        REQUIRE(res_forward[0] == in[0]);  // FFT одного элемента должен быть самим этим элементом
+        transform->Inverse1d(n, res_forward, res_backward);
+        REQUIRE(res_backward[0] == in[0]);  // IFFT должен восстанавливать исходный элемент
+    }
+}
+
+TEST_CASE("Boundary conditions 2d") {
+    int n1 = 1, n2 = 1; // Обработка одного элемента
+    std::complex<double> in[] = { 1.0 };
+    std::complex<double> res_forward[n1 * n2];
+    std::complex<double> res_backward[n1 * n2];
+
+    std::unique_ptr<Fourier<>> transforms[] = {
+        std::make_unique<FourierBasic<>>(),
+        std::make_unique<FourierFast<>>(),
+        std::make_unique<FourierFastBitReverse<>>(),
+        std::make_unique<FourierAdvanced<>>(),
+        std::make_unique<FourierAdvancedBitReverse<>>(),
+        std::make_unique<FourierFastBitReverse2dFix<>>(),
+    };
+
+    for (auto& transform : transforms) {
+        transform->Forward2d(n1, n2, in, res_forward);
+        REQUIRE(res_forward[0] == in[0]);  // FFT одного элемента должен быть самим этим элементом
+        transform->Inverse2d(n1, n2, res_forward, res_backward);
+        REQUIRE(res_backward[0] == in[0]);  // IFFT должен восстанавливать исходный элемент
+    }
+}
+TEST_CASE("Random 1d") {
+    int n = 1024; // Большой размер входных данных
+    std::complex<double> in[n];
+    std::complex<double> out[n];
+    std::complex<double> res[n];
+
+    std::unique_ptr<Fourier<>> transforms[] = {
+        std::make_unique<FourierBasic<>>(),
+        std::make_unique<FourierFast<>>(),
+        std::make_unique<FourierFastBitReverse<>>(),
+        std::make_unique<FourierAdvanced<>>(),
+        std::make_unique<FourierAdvancedBitReverse<>>(),
+        std::make_unique<FourierFastBitReverse2dFix<>>(),
+    };
+
+    for (int i = 0; i < TRIES; ++i) {
+        for (int j = 0; j < n; ++j) {
+            in[j] = std::complex<double>(rand(), rand());
+        }
+
+        for (auto& transform : transforms) {
+            transform->Forward1d(n, in, out);
+            transform->Inverse1d(n, out, res);
+            REQUIRE(AllClose(n, res, in));
+        }
+    }
+}
+
+TEST_CASE("Random 2d") {
+    int n1 = 32, n2 = 32; // Большой размер входных данных
+    std::complex<double> in[n1 * n2];
+    std::complex<double> out[n1 * n2];
+    std::complex<double> res[n1 * n2];
+
+    std::unique_ptr<Fourier<>> transforms[] = {
+        std::make_unique<FourierBasic<>>(),
+        std::make_unique<FourierFast<>>(),
+        std::make_unique<FourierFastBitReverse<>>(),
+        std::make_unique<FourierAdvanced<>>(),
+        std::make_unique<FourierAdvancedBitReverse<>>(),
+        std::make_unique<FourierFastBitReverse2dFix<>>(),
+    };
+
+    for (int i = 0; i < TRIES; ++i) {
+        for (int j = 0; j < n1 * n2; ++j) {
+            in[j] = std::complex<double>(rand(), rand());
+        }
+        
+        for (auto& transform : transforms) {
+            transform->Forward2d(n1, n2, in, out);
+            transform->Inverse2d(n1, n2, out, res);
+            REQUIRE(AllClose(n1 * n2, res, in));
+        }
+    }
+}
