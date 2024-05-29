@@ -28,7 +28,6 @@ class MainWindow(QMainWindow):
         file_name, _ = QFileDialog.getOpenFileName(self,'QFileDialog.getOpenFileName()', '','All Files (*);;Python Files (*.py)', options=options)
         if file_name:
             self.file_label.setText(file_name)
-            # здесь вы можете добавить код для чтения и обработки файла
 
 if name == 'main':
     app = QApplication(sys.argv)
